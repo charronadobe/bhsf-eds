@@ -267,13 +267,13 @@ function createSearchBox() {
       value: "",
       autocomplete: "off",
     });
-    searchInputBox.addEventListener("keydown", handleEnterKey);
-    searchInputContainer.append(searchInputBox, searchIcon);
-    const searchContainerWrapper = div({ class: "search-input-wrapper" });
-    searchContainerWrapper.append(searchInputContainer);
-    searchContainer.appendChild(searchContainerWrapper);
+    // searchInputBox.addEventListener("keydown", handleEnterKey);
+    // searchInputContainer.append(searchInputBox, searchIcon);
+    // const searchContainerWrapper = div({ class: "search-input-wrapper" });
+    // searchContainerWrapper.append(searchInputContainer);
+    // searchContainer.appendChild(searchContainerWrapper);
 
-    navTools.appendChild(searchContainer);
+    // navTools.appendChild(searchContainer);
   }
 }
 

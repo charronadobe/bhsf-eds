@@ -693,7 +693,7 @@ export default async function decorate(block) {
   block.append(navWrapper);
   settingAltTextForSearchIcon();
   //fetchingPlaceholdersData();
-  //addLogoLink(langCode);
+  addLogoLink(langCode);
   // Ensure search icon mask uses correct base path in UE/author/local
   try {
     const iconEl = document.querySelector("header .search.search-icon .icon");

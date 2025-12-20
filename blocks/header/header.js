@@ -82,7 +82,7 @@ function toggleAllNavSections(sections, expanded = false) {
   );
   if (navSections && navSections.length > 0) {
     navSections.forEach((section) => {
-      //section.setAttribute('aria-expanded', expanded);
+      section.setAttribute("aria-expanded", expanded);
     });
   }
 }

@@ -67,9 +67,9 @@ const siteName = await getSiteName();
 //   }
 // }
 
-// function focusNavSection() {
-//   document.activeElement.addEventListener("keydown", openOnKeydown);
-// }
+function focusNavSection() {
+  document.activeElement.addEventListener("keydown", openOnKeydown);
+}
 
 /**
  * Toggles all nav sections

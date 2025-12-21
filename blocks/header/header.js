@@ -71,104 +71,104 @@ const siteName = await getSiteName();
 //   document.activeElement.addEventListener("keydown", openOnKeydown);
 // }
 
-// /**
-//  * Toggles all nav sections
-//  * @param {Element} sections The container element
-//  * @param {Boolean} expanded Whether the element should be expanded or collapsed
-//  */
-// function toggleAllNavSections(sections, expanded = false) {
-//   const navSections = sections.querySelectorAll(
-//     ".nav-sections .default-content-wrapper > ul > li"
-//   );
-//   if (navSections && navSections.length > 0) {
-//     navSections.forEach((section) => {
-//       section.setAttribute("aria-expanded", expanded);
-//     });
-//   }
-// }
+/**
+ * Toggles all nav sections
+ * @param {Element} sections The container element
+ * @param {Boolean} expanded Whether the element should be expanded or collapsed
+ */
+function toggleAllNavSections(sections, expanded = false) {
+  const navSections = sections.querySelectorAll(
+    ".nav-sections .default-content-wrapper > ul > li"
+  );
+  if (navSections && navSections.length > 0) {
+    navSections.forEach((section) => {
+      section.setAttribute("aria-expanded", expanded);
+    });
+  }
+}
 
-// async function overlayLoad(navSections) {
-//   const langCode = getLanguage();
-//   const placeholdersData = await fetchLanguagePlaceholders();
-//   const navOverlay = navSections.querySelector(
-//     constants.NAV_MENU_OVERLAY_WITH_SELECTOR
-//   );
-//   if (!navOverlay) {
-//     const structuredNav = formatNavigationJsonData(
-//       window.navigationData[`/${langCode}`]
-//     );
-//     // Add navigation menu to header
-//     navSections.append(getNavigationMenu(structuredNav, placeholdersData));
-//   }
-//   const rightColumn = navSections.querySelector(".nav-menu-column.right");
-//   const leftColumn = navSections.querySelector(".nav-menu-column.left");
-//   isDesktop.addEventListener("change", () =>
-//     closesideMenu(leftColumn, rightColumn)
-//   );
-//   document.body.addEventListener("click", (e) =>
-//     closesearchbar(e, navSections)
-//   );
-//   document.body.addEventListener("keydown", (e) =>
-//     closesearchbar(e, navSections)
-//   );
-// }
+async function overlayLoad(navSections) {
+  const langCode = getLanguage();
+  const placeholdersData = await fetchLanguagePlaceholders();
+  const navOverlay = navSections.querySelector(
+    constants.NAV_MENU_OVERLAY_WITH_SELECTOR
+  );
+  if (!navOverlay) {
+    const structuredNav = formatNavigationJsonData(
+      window.navigationData[`/${langCode}`]
+    );
+    // Add navigation menu to header
+    navSections.append(getNavigationMenu(structuredNav, placeholdersData));
+  }
+  const rightColumn = navSections.querySelector(".nav-menu-column.right");
+  const leftColumn = navSections.querySelector(".nav-menu-column.left");
+  isDesktop.addEventListener("change", () =>
+    closesideMenu(leftColumn, rightColumn)
+  );
+  document.body.addEventListener("click", (e) =>
+    closesearchbar(e, navSections)
+  );
+  document.body.addEventListener("keydown", (e) =>
+    closesearchbar(e, navSections)
+  );
+}
 
-// /**
-//  * Toggles the entire nav
-//  * @param {Element} nav The container element
-//  * @param {Element} navSections The nav sections within the container element
-//  * @param {*} forceExpanded Optional param to force nav expand behavior when not null
-//  */
-// async function toggleMenu(nav, navSections, forceExpanded = null) {
-//   /*
-//   if (window.navigationData) {
-//     await overlayLoad(navSections);
-//   } else {
-//     return;
-//   }*/
+/**
+ * Toggles the entire nav
+ * @param {Element} nav The container element
+ * @param {Element} navSections The nav sections within the container element
+ * @param {*} forceExpanded Optional param to force nav expand behavior when not null
+ */
+async function toggleMenu(nav, navSections, forceExpanded = null) {
+  /*
+  if (window.navigationData) {
+    await overlayLoad(navSections);
+  } else {
+    return;
+  }*/
 
-//   const expanded =
-//     forceExpanded !== null
-//       ? !forceExpanded
-//       : nav.getAttribute("aria-expanded") === "true";
-//   const button = nav.querySelector(".nav-hamburger button");
-//   document.body.style.overflowY = expanded || isDesktop.matches ? "" : "hidden";
-//   nav.setAttribute("aria-expanded", expanded ? "false" : "true");
-//   toggleAllNavSections(
-//     navSections,
-//     expanded || isDesktop.matches ? "false" : "true"
-//   );
-//   button.setAttribute(
-//     "aria-label",
-//     expanded ? "Open navigation" : "Close navigation"
-//   );
-//   // enable nav dropdown keyboard accessibility
-//   const navDrops = navSections.querySelectorAll(".nav-drop");
-//   if (isDesktop.matches) {
-//     navDrops.forEach((drop) => {
-//       if (!drop.hasAttribute("tabindex")) {
-//         drop.setAttribute("tabindex", 0);
-//         drop.addEventListener("focus", focusNavSection);
-//       }
-//     });
-//   } else {
-//     navDrops.forEach((drop) => {
-//       drop.removeAttribute("tabindex");
-//       drop.removeEventListener("focus", focusNavSection);
-//     });
-//   }
+  const expanded =
+    forceExpanded !== null
+      ? !forceExpanded
+      : nav.getAttribute("aria-expanded") === "true";
+  const button = nav.querySelector(".nav-hamburger button");
+  document.body.style.overflowY = expanded || isDesktop.matches ? "" : "hidden";
+  nav.setAttribute("aria-expanded", expanded ? "false" : "true");
+  toggleAllNavSections(
+    navSections,
+    expanded || isDesktop.matches ? "false" : "true"
+  );
+  button.setAttribute(
+    "aria-label",
+    expanded ? "Open navigation" : "Close navigation"
+  );
+  // enable nav dropdown keyboard accessibility
+  const navDrops = navSections.querySelectorAll(".nav-drop");
+  if (isDesktop.matches) {
+    navDrops.forEach((drop) => {
+      if (!drop.hasAttribute("tabindex")) {
+        drop.setAttribute("tabindex", 0);
+        drop.addEventListener("focus", focusNavSection);
+      }
+    });
+  } else {
+    navDrops.forEach((drop) => {
+      drop.removeAttribute("tabindex");
+      drop.removeEventListener("focus", focusNavSection);
+    });
+  }
 
-//   // enable menu collapse on escape keypress
-//   if (!expanded || isDesktop.matches) {
-//     // collapse menu on escape press
-//     window.addEventListener("keydown", closeOnEscape);
-//     // collapse menu on focus lost
-//     nav.addEventListener("focusout", closeOnFocusLost);
-//   } else {
-//     window.removeEventListener("keydown", closeOnEscape);
-//     nav.removeEventListener("focusout", closeOnFocusLost);
-//   }
-// }
+  // enable menu collapse on escape keypress
+  if (!expanded || isDesktop.matches) {
+    // collapse menu on escape press
+    window.addEventListener("keydown", closeOnEscape);
+    // collapse menu on focus lost
+    nav.addEventListener("focusout", closeOnFocusLost);
+  } else {
+    window.removeEventListener("keydown", closeOnEscape);
+    nav.removeEventListener("focusout", closeOnFocusLost);
+  }
+}
 
 function settingAltTextForSearchIcon() {
   const searchImage = document.querySelector(".icon-search-light");

@@ -20,56 +20,56 @@ import { isAuthorEnvironment } from "../../scripts/scripts.js";
 const isDesktop = window.matchMedia("(min-width: 900px)");
 const siteName = await getSiteName();
 
-// function closeOnEscape(e) {
-//   if (e.code === "Escape") {
-//     const nav = document.getElementById("nav");
-//     const navSections = nav.querySelector(".nav-sections");
-//     const navSectionExpanded = navSections.querySelector(
-//       '[aria-expanded="true"]'
-//     );
-//     if (navSectionExpanded && isDesktop.matches) {
-//       // eslint-disable-next-line no-use-before-define
-//       toggleAllNavSections(navSections);
-//       navSectionExpanded.focus();
-//     } else if (!isDesktop.matches) {
-//       // eslint-disable-next-line no-use-before-define
-//       toggleMenu(nav, navSections);
-//       nav.querySelector("button").focus();
-//     }
-//   }
-// }
-
-// function closeOnFocusLost(e) {
-//   const nav = e.currentTarget;
-//   if (!nav.contains(e.relatedTarget)) {
-//     const navSections = nav.querySelector(".nav-sections");
-//     const navSectionExpanded = navSections.querySelector(
-//       '[aria-expanded="true"]'
-//     );
-//     if (navSectionExpanded && isDesktop.matches) {
-//       // eslint-disable-next-line no-use-before-define
-//       toggleAllNavSections(navSections, false);
-//     } else if (!isDesktop.matches) {
-//       // eslint-disable-next-line no-use-before-define
-//       toggleMenu(nav, navSections, false);
-//     }
-//   }
-// }
-
-// function openOnKeydown(e) {
-//   const focused = document.activeElement;
-//   const isNavDrop = focused.className === "nav-drop";
-//   if (isNavDrop && (e.code === "Enter" || e.code === "Space")) {
-//     const dropExpanded = focused.getAttribute("aria-expanded") === "true";
-//     // eslint-disable-next-line no-use-before-define
-//     toggleAllNavSections(focused.closest(".nav-sections"));
-//     focused.setAttribute("aria-expanded", dropExpanded ? "false" : "true");
-//   }
-// }
-
-function focusNavSection() {
-  document.activeElement.addEventListener("keydown", openOnKeydown);
+function closeOnEscape(e) {
+  if (e.code === "Escape") {
+    const nav = document.getElementById("nav");
+    const navSections = nav.querySelector(".nav-sections");
+    const navSectionExpanded = navSections.querySelector(
+      '[aria-expanded="true"]'
+    );
+    if (navSectionExpanded && isDesktop.matches) {
+      // eslint-disable-next-line no-use-before-define
+      toggleAllNavSections(navSections);
+      navSectionExpanded.focus();
+    } else if (!isDesktop.matches) {
+      // eslint-disable-next-line no-use-before-define
+      toggleMenu(nav, navSections);
+      nav.querySelector("button").focus();
+    }
+  }
 }
+
+function closeOnFocusLost(e) {
+  const nav = e.currentTarget;
+  if (!nav.contains(e.relatedTarget)) {
+    const navSections = nav.querySelector(".nav-sections");
+    const navSectionExpanded = navSections.querySelector(
+      '[aria-expanded="true"]'
+    );
+    if (navSectionExpanded && isDesktop.matches) {
+      // eslint-disable-next-line no-use-before-define
+      toggleAllNavSections(navSections, false);
+    } else if (!isDesktop.matches) {
+      // eslint-disable-next-line no-use-before-define
+      toggleMenu(nav, navSections, false);
+    }
+  }
+}
+
+function openOnKeydown(e) {
+  const focused = document.activeElement;
+  const isNavDrop = focused.className === "nav-drop";
+  if (isNavDrop && (e.code === "Enter" || e.code === "Space")) {
+    const dropExpanded = focused.getAttribute("aria-expanded") === "true";
+    // eslint-disable-next-line no-use-before-define
+    toggleAllNavSections(focused.closest(".nav-sections"));
+    focused.setAttribute("aria-expanded", dropExpanded ? "false" : "true");
+  }
+}
+
+// function focusNavSection() {
+//   document.activeElement.addEventListener("keydown", openOnKeydown);
+// }
 
 /**
  * Toggles all nav sections

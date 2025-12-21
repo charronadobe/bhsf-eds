@@ -7,59 +7,59 @@ import {
   span,
   input,
   a,
-} from '../../scripts/dom-helpers.js';
-import * as constants from './constants.js';
+} from "../../scripts/dom-helpers.js";
+import * as constants from "./constants.js";
 
 // Global Varibale
-const isDesktop = window.matchMedia('(min-width: 1024px)');
+const isDesktop = window.matchMedia("(min-width: 1024px)");
 
 const filterCountry = (e) => {
   const inputBrowseCountry = e.currentTarget;
   if (!inputBrowseCountry) return;
   const filter = inputBrowseCountry.value.toUpperCase();
   const countryList = inputBrowseCountry.nextElementSibling;
-  const para = document.querySelector('.browse-country p');
-  para.style.transform = 'rotate(-180deg)';
-  para.setAttribute('araia-label', 'close dropdown');
-  countryList.style.display = 'block';
+  const para = document.querySelector(".browse-country p");
+  para.style.transform = "rotate(-180deg)";
+  para.setAttribute("araia-label", "close dropdown");
+  countryList.style.display = "block";
   let flag = 0;
   const listItems = countryList.children;
   const listItemsArray = Array.from(listItems);
   listItemsArray.forEach((item) => {
     if (item.textContent.toUpperCase().indexOf(filter) === 0) {
-      item.style.display = '';
+      item.style.display = "";
       flag = 1;
     } else {
-      item.style.display = 'none';
+      item.style.display = "none";
     }
   });
   if (!flag) {
-    countryList.style.display = 'none';
+    countryList.style.display = "none";
   }
 };
 
 const closesearchbar = (e, navSections) => {
-  if (e.type === 'keydown') {
-    if (e.key !== 'Enter') {
+  if (e.type === "keydown") {
+    if (e.key !== "Enter") {
       return;
     }
   }
-  const indicator = navSections.querySelector('.browse-country p');
-  const inputtext = navSections.querySelector('.browse-country input');
-  const countrylist = navSections.querySelector('.country-list');
-  const dropdownButton = document.querySelector('.browse-country p');
-  if (e.target === indicator && countrylist.style.display === 'block') {
-    countrylist.style.display = 'none';
-    dropdownButton.style.transform = 'rotate(0deg)';
-    dropdownButton.setAttribute('araia-label', 'open dropdown');
+  const indicator = navSections.querySelector(".browse-country p");
+  const inputtext = navSections.querySelector(".browse-country input");
+  const countrylist = navSections.querySelector(".country-list");
+  const dropdownButton = document.querySelector(".browse-country p");
+  if (e.target === indicator && countrylist.style.display === "block") {
+    countrylist.style.display = "none";
+    dropdownButton.style.transform = "rotate(0deg)";
+    dropdownButton.setAttribute("araia-label", "open dropdown");
   } else if (e.target === inputtext || e.target === indicator) {
-    countrylist.style.display = 'block';
-    dropdownButton.style.transform = 'rotate(-180deg)';
-    dropdownButton.setAttribute('araia-label', 'close dropdown');
+    countrylist.style.display = "block";
+    dropdownButton.style.transform = "rotate(-180deg)";
+    dropdownButton.setAttribute("araia-label", "close dropdown");
   } else {
-    countrylist.style.display = 'none';
-    dropdownButton.style.transform = 'rotate(0deg)';
-    dropdownButton.setAttribute('araia-label', 'close dropdown');
+    countrylist.style.display = "none";
+    dropdownButton.style.transform = "rotate(0deg)";
+    dropdownButton.setAttribute("araia-label", "close dropdown");
   }
 };
 // Create Dropdown category based on Type=dropdown defined in Navigation.json
@@ -69,20 +69,20 @@ const createCountryDropDown = (category, countrySearchPlaceholder) => {
     {},
     ul(
       {
-        class: 'browse-country',
+        class: "browse-country",
       },
       category.Title,
       div(
         input({
-          type: 'text',
+          type: "text",
           placeholder: countrySearchPlaceholder,
           oninput: (e) => filterCountry(e),
           onfocus: (e) => filterCountry(e),
         }),
-        countryList,
+        countryList
       ),
-      p({ tabindex: '0', 'aria-label': 'open dropdown' }),
-    ),
+      p({ tabindex: "0", "aria-label": "open dropdown" })
+    )
   );
   category.items.forEach((country) => {
     countryList.append(li(a({ href: country.Link }, country.Title)));
@@ -94,8 +94,8 @@ const createCountryDropDown = (category, countrySearchPlaceholder) => {
 const createListItemWithAnchor = (item) => {
   // Create the main list item
   const listItem = li(
-    { class: item.Class !== '' ? item.Class : '' },
-    a({ href: item.Link }, item.Title, span()),
+    { class: item.Class !== "" ? item.Class : "" },
+    a({ href: item.Link }, item.Title, span())
   );
 
   // If the item has sub-items, recursively create sub-menu
@@ -114,25 +114,28 @@ const createCategoriesAndSubMenu = (
   level0Item,
   submenuId,
   index,
-  countrySearchPlaceholder,
+  countrySearchPlaceholder
 ) => {
   const submenu = ul({
     id: submenuId,
     class: constants.SUBMENU,
     style:
-      isDesktop.matches && index === 0 ? 'display: flex;' : 'display: none;',
+      isDesktop.matches && index === 0 ? "display: flex;" : "display: none;",
   });
 
   level0Item.categories.forEach((category) => {
     if (category.Type === constants.DROPDOWN) {
       submenu.appendChild(
-        createCountryDropDown(category, countrySearchPlaceholder),
+        createCountryDropDown(category, countrySearchPlaceholder)
       );
     } else {
       const categoryList = ul();
       const categoryItem = li(
-        { class: category.Type === constants.FOOTER ? category.Type : '', role: 'link' },
-        category.Title,
+        {
+          class: category.Type === constants.FOOTER ? category.Type : "",
+          role: "link",
+        },
+        category.Title
       );
       category.items.forEach((subItem) => {
         const subMenuItem = createListItemWithAnchor(subItem);
@@ -152,95 +155,95 @@ const showSubMenu = (
   submenuId,
   submenuTitle,
   submenuLn,
-  currentIndex,
+  currentIndex
 ) => {
   document.querySelector(
-    constants.NAV_MENU_OVERLAY_WITH_SELECTOR,
+    constants.NAV_MENU_OVERLAY_WITH_SELECTOR
   ).scrollTop = 0;
-  rightColumn.style.display = 'block';
+  rightColumn.style.display = "block";
   if (!isDesktop.matches) {
     const sidemenuBackButton = rightColumn.querySelector(
-      constants.OVERLAY_BACK_WITH_SELECTOR,
+      constants.OVERLAY_BACK_WITH_SELECTOR
     );
-    sidemenuBackButton.style.display = 'block';
+    sidemenuBackButton.style.display = "block";
     const currentSubMenu = rightColumn.querySelector(
-      constants.SUBMENU_MAIN_TITLE_WITH_SELECTOR,
+      constants.SUBMENU_MAIN_TITLE_WITH_SELECTOR
     );
-    const submenuredirect = currentSubMenu.querySelector('a');
+    const submenuredirect = currentSubMenu.querySelector("a");
     submenuredirect.textContent = submenuTitle;
     submenuredirect.href = submenuLn;
-    currentSubMenu.style.display = 'flex';
-    leftColumn.style.display = 'none';
+    currentSubMenu.style.display = "flex";
+    leftColumn.style.display = "none";
   }
 
   const submenus = rightColumn.querySelectorAll(
-    constants.SUBMENU_WITH_SELECTOR,
+    constants.SUBMENU_WITH_SELECTOR
   );
   submenus.forEach((submenu) => {
     if (submenu.id === submenuId) {
-      submenu.style.display = 'flex';
-      submenu.setAttribute('aria-expanded', 'true');
+      submenu.style.display = "flex";
+      submenu.setAttribute("aria-expanded", "true");
     } else {
-      submenu.style.display = 'none';
-      submenu.setAttribute('aria-expanded', 'false');
+      submenu.style.display = "none";
+      submenu.setAttribute("aria-expanded", "false");
     }
   });
   const countrylist = rightColumn.querySelector(
-    constants.COUNTRY_LIST_WITH_SELECTOR,
+    constants.COUNTRY_LIST_WITH_SELECTOR
   );
-  countrylist.style.display = 'none';
-  const indicator = rightColumn.querySelector(
-    '.browse-country p',
-  );
-  indicator.style.transform = 'rotate(0deg)';
-  indicator.setAttribute('araia-label', 'open dropdown');
+  countrylist.style.display = "none";
+  const indicator = rightColumn.querySelector(".browse-country p");
+  indicator.style.transform = "rotate(0deg)";
+  indicator.setAttribute("araia-label", "open dropdown");
 
   // Update the selected state of the menu items in the left column
-  const level0Items = leftColumn.querySelectorAll('li');
+  const level0Items = leftColumn.querySelectorAll("li");
   level0Items.forEach((item, index) => {
     if (index === currentIndex) {
       item.classList.add(constants.SELECTED);
-      item.setAttribute('aria-expanded', 'true');
+      item.setAttribute("aria-expanded", "true");
     } else {
       item.classList.remove(constants.SELECTED);
-      item.setAttribute('aria-expanded', 'false');
+      item.setAttribute("aria-expanded", "false");
     }
   });
 };
 
 const closesideMenu = (leftColumn, rightColumn) => {
   const navOverlay = document.querySelector(
-    constants.NAV_MENU_OVERLAY_WITH_SELECTOR,
+    constants.NAV_MENU_OVERLAY_WITH_SELECTOR
   );
   if (navOverlay) {
     navOverlay.scrollTop = 0;
-    leftColumn.style.display = 'flex';
+    leftColumn.style.display = "flex";
     if (!isDesktop.matches) {
-      rightColumn.style.display = 'none';
+      rightColumn.style.display = "none";
     } else {
-      rightColumn.style.display = 'flex';
+      rightColumn.style.display = "flex";
     }
-    const submenuElements = rightColumn.getElementsByClassName(constants.SUBMENU);
+    const submenuElements = rightColumn.getElementsByClassName(
+      constants.SUBMENU
+    );
     const submenus = Array.from(submenuElements);
-    leftColumn.querySelectorAll('li').forEach((leftColumnItem, index) => {
-      leftColumnItem.classList.remove('selected');
-      if (index === 0) leftColumnItem.classList.add('selected');
+    leftColumn.querySelectorAll("li").forEach((leftColumnItem, index) => {
+      leftColumnItem.classList.remove("selected");
+      if (index === 0) leftColumnItem.classList.add("selected");
     });
     submenus.forEach((submenu, index) => {
       if (isDesktop.matches && index === 0) {
-        submenu.style.display = 'flex';
+        submenu.style.display = "flex";
       } else {
-        submenu.style.display = 'none';
+        submenu.style.display = "none";
       }
     });
     const sidemenuBackButton = rightColumn.querySelector(
-      '.nav-menu-overlay-back',
+      ".nav-menu-overlay-back"
     );
-    sidemenuBackButton.style.display = 'none';
+    sidemenuBackButton.style.display = "none";
     const currentSubMenu = rightColumn.querySelector(
-      constants.SUBMENU_MAIN_TITLE_WITH_SELECTOR,
+      constants.SUBMENU_MAIN_TITLE_WITH_SELECTOR
     );
-    currentSubMenu.style.display = 'none';
+    currentSubMenu.style.display = "none";
   }
 };
 const getNavigationMenu = (structuredNav, placeholdersData) => {
@@ -251,7 +254,7 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
   const listMainNavTitle = ul();
   const menuLeftColumn = div(
     { class: constants.NAV_MENU_COLUMN_LEFT },
-    listMainNavTitle,
+    listMainNavTitle
   );
 
   const menuRightColumn = div(
@@ -259,15 +262,15 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
     button({
       class: constants.NAV_MENU_OVERLAY_BACK,
       onclick: () => closesideMenu(menuLeftColumn, menuRightColumn),
-      'aria-label': 'go back',
+      "aria-label": "go back",
     }),
-    p({ class: constants.SUBMENU_MAIN_TITLE }, a()),
+    p({ class: constants.SUBMENU_MAIN_TITLE }, a())
   );
 
   const navMenu = div(
     { class: constants.NAV_MENU },
     menuLeftColumn,
-    menuRightColumn,
+    menuRightColumn
   );
   const menuOverlay = div({ class: constants.NAV_MENU_OVERLAY }, navMenu);
 
@@ -277,48 +280,53 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
     // create left column menu
     const level0MenuItem = li(
       {
-        tabindex: '0',
-        'aria-expanded': 'false',
-        onkeydown: (e) => (e.code === 'Enter'
-          ? showSubMenu(
-            menuLeftColumn,
-            menuRightColumn,
-            submenuId,
-            level0Item.title,
-            level0Item.link,
-            index,
-          ) : ''),
-        onmouseover: () => (isDesktop.matches
-          ? showSubMenu(
-            menuLeftColumn,
-            menuRightColumn,
-            submenuId,
-            level0Item.title,
-            level0Item.link,
-            index,
-          )
-          : ''),
-        onclick: () => (!isDesktop.matches
-          ? showSubMenu(
-            menuLeftColumn,
-            menuRightColumn,
-            submenuId,
-            level0Item.title,
-            level0Item.link,
-            index,
-          )
-          : ''),
+        tabindex: "0",
+        "aria-expanded": "false",
+        onkeydown: (e) =>
+          e.code === "Enter"
+            ? showSubMenu(
+                menuLeftColumn,
+                menuRightColumn,
+                submenuId,
+                level0Item.title,
+                level0Item.link,
+                index
+              )
+            : "",
+        onmouseover: () =>
+          isDesktop.matches
+            ? showSubMenu(
+                menuLeftColumn,
+                menuRightColumn,
+                submenuId,
+                level0Item.title,
+                level0Item.link,
+                index
+              )
+            : "",
+        onclick: () =>
+          !isDesktop.matches
+            ? showSubMenu(
+                menuLeftColumn,
+                menuRightColumn,
+                submenuId,
+                level0Item.title,
+                level0Item.link,
+                index
+              )
+            : "",
       },
-      span({ textContent: '' }), // level0MenuItemArrow
-      a({ href: level0Item.link }, level0Item.title),
+      span({ textContent: "" }), // level0MenuItemArrow
+      a({ href: level0Item.link }, level0Item.title)
     );
-    const isSelected = isDesktop.matches && index === 0 ? constants.SELECTED : '';
+    const isSelected =
+      isDesktop.matches && index === 0 ? constants.SELECTED : "";
     if (isSelected) {
       level0MenuItem.classList.add(isSelected);
-      level0MenuItem.setAttribute('aria-expanded', 'true');
+      level0MenuItem.setAttribute("aria-expanded", "true");
     }
 
-    listMainNavTitle.appendChild(level0MenuItem);
+    //listMainNavTitle.appendChild(level0MenuItem);
 
     // Create right column submenu
     // Iterate over level0 Items and create associated category list
@@ -326,7 +334,7 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
       level0Item,
       submenuId,
       index,
-      `${searchByCountryPlaceholder}`,
+      `${searchByCountryPlaceholder}`
     );
     menuRightColumn.appendChild(subMenu);
   });
@@ -349,9 +357,9 @@ const formatNavigationJsonData = (navJson) => {
       structuredData.push(level0);
       currentLevel0 = level0;
     } else if (
-      item.Type === constants.CATEGORY
-      || item.Type === constants.FOOTER
-      || item.Type === constants.DROPDOWN
+      item.Type === constants.CATEGORY ||
+      item.Type === constants.FOOTER ||
+      item.Type === constants.DROPDOWN
     ) {
       const category = {
         ...item,
@@ -374,5 +382,8 @@ const formatNavigationJsonData = (navJson) => {
   return structuredData;
 };
 export {
-  getNavigationMenu, formatNavigationJsonData, closesideMenu, closesearchbar,
+  getNavigationMenu,
+  formatNavigationJsonData,
+  closesideMenu,
+  closesearchbar,
 };

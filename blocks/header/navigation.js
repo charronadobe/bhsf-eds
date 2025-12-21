@@ -339,7 +339,8 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
     menuRightColumn.appendChild(subMenu);
   });
 
-  return menuOverlay;
+  //return menuOverlay;
+  return false;
 };
 
 const formatNavigationJsonData = (navJson) => {

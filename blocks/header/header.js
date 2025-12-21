@@ -688,7 +688,7 @@ export default async function decorate(block) {
   );
 
   const navWrapper = document.createElement("div");
-  navWrapper.className = "nav-wrapper";
+  navWrapper.className = "nav-whatever";
   navWrapper.append(nav);
   block.append(navWrapper);
   settingAltTextForSearchIcon();

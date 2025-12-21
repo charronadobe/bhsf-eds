@@ -278,7 +278,7 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
   structuredNav.forEach((level0Item, index) => {
     const submenuId = `${constants.SUBMENU}_${index}`;
     // create left column menu
-    const level0MenuItem = li(
+    const level0MenuItem = p(
       {
         tabindex: "0",
         "aria-expanded": "false",

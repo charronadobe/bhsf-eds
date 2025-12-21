@@ -364,7 +364,7 @@ async function addLogoLink(langCode) {
     const picture = document.querySelector(".nav-brand picture");
     if (picture) anchor.appendChild(picture);
     const targetElement = document.querySelector(
-      ".nav-brand .default-content-wrapper"
+      ".nav-brand .default-content-whopper"
     );
     if (targetElement) {
       targetElement.appendChild(anchor);
@@ -688,7 +688,7 @@ export default async function decorate(block) {
   );
 
   const navWrapper = document.createElement("div");
-  navWrapper.className = "nav-whatever";
+  navWrapper.className = "nav-wrapper";
   navWrapper.append(nav);
   block.append(navWrapper);
   settingAltTextForSearchIcon();

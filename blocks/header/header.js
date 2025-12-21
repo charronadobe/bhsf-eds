@@ -119,88 +119,88 @@ async function overlayLoad(navSections) {
  * @param {Element} navSections The nav sections within the container element
  * @param {*} forceExpanded Optional param to force nav expand behavior when not null
  */
-async function toggleMenu(nav, navSections, forceExpanded = null) {
-  /*
-  if (window.navigationData) {
-    await overlayLoad(navSections);
-  } else {
-    return;
-  }*/
+// async function toggleMenu(nav, navSections, forceExpanded = null) {
+//   /*
+//   if (window.navigationData) {
+//     await overlayLoad(navSections);
+//   } else {
+//     return;
+//   }*/
 
-  const expanded =
-    forceExpanded !== null
-      ? !forceExpanded
-      : nav.getAttribute("aria-expanded") === "true";
-  const button = nav.querySelector(".nav-hamburger button");
-  document.body.style.overflowY = expanded || isDesktop.matches ? "" : "hidden";
-  nav.setAttribute("aria-expanded", expanded ? "false" : "true");
-  toggleAllNavSections(
-    navSections,
-    expanded || isDesktop.matches ? "false" : "true"
-  );
-  button.setAttribute(
-    "aria-label",
-    expanded ? "Open navigation" : "Close navigation"
-  );
-  // enable nav dropdown keyboard accessibility
-  const navDrops = navSections.querySelectorAll(".nav-drop");
-  if (isDesktop.matches) {
-    navDrops.forEach((drop) => {
-      if (!drop.hasAttribute("tabindex")) {
-        drop.setAttribute("tabindex", 0);
-        drop.addEventListener("focus", focusNavSection);
-      }
-    });
-  } else {
-    navDrops.forEach((drop) => {
-      drop.removeAttribute("tabindex");
-      drop.removeEventListener("focus", focusNavSection);
-    });
-  }
+//   const expanded =
+//     forceExpanded !== null
+//       ? !forceExpanded
+//       : nav.getAttribute("aria-expanded") === "true";
+//   const button = nav.querySelector(".nav-hamburger button");
+//   document.body.style.overflowY = expanded || isDesktop.matches ? "" : "hidden";
+//   nav.setAttribute("aria-expanded", expanded ? "false" : "true");
+//   toggleAllNavSections(
+//     navSections,
+//     expanded || isDesktop.matches ? "false" : "true"
+//   );
+//   button.setAttribute(
+//     "aria-label",
+//     expanded ? "Open navigation" : "Close navigation"
+//   );
+//   // enable nav dropdown keyboard accessibility
+//   const navDrops = navSections.querySelectorAll(".nav-drop");
+//   if (isDesktop.matches) {
+//     navDrops.forEach((drop) => {
+//       if (!drop.hasAttribute("tabindex")) {
+//         drop.setAttribute("tabindex", 0);
+//         drop.addEventListener("focus", focusNavSection);
+//       }
+//     });
+//   } else {
+//     navDrops.forEach((drop) => {
+//       drop.removeAttribute("tabindex");
+//       drop.removeEventListener("focus", focusNavSection);
+//     });
+//   }
 
-  // enable menu collapse on escape keypress
-  if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
-    window.addEventListener("keydown", closeOnEscape);
-    // collapse menu on focus lost
-    nav.addEventListener("focusout", closeOnFocusLost);
-  } else {
-    window.removeEventListener("keydown", closeOnEscape);
-    nav.removeEventListener("focusout", closeOnFocusLost);
-  }
-}
+//   // enable menu collapse on escape keypress
+//   if (!expanded || isDesktop.matches) {
+//     // collapse menu on escape press
+//     window.addEventListener("keydown", closeOnEscape);
+//     // collapse menu on focus lost
+//     nav.addEventListener("focusout", closeOnFocusLost);
+//   } else {
+//     window.removeEventListener("keydown", closeOnEscape);
+//     nav.removeEventListener("focusout", closeOnFocusLost);
+//   }
+// }
 
-function settingAltTextForSearchIcon() {
-  const searchImage = document.querySelector(".icon-search-light");
-  if (!searchImage) {
-    // eslint-disable-next-line no-console
-    console.debug(
-      "header: .icon-search-light not found; skipping search icon init"
-    );
-    return;
-  }
-  searchImage.style.cursor = "pointer";
-  searchImage.addEventListener("click", () => {
-    createSearchBox();
-  });
-  searchImage.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      createSearchBox();
-      e.currentTarget.nextElementSibling.focus();
-    }
-  });
-  //searchImage.setAttribute('title', listOfAllPlaceholdersData.searchAltText || 'Search');
-}
+// function settingAltTextForSearchIcon() {
+//   const searchImage = document.querySelector(".icon-search-light");
+//   if (!searchImage) {
+//     // eslint-disable-next-line no-console
+//     console.debug(
+//       "header: .icon-search-light not found; skipping search icon init"
+//     );
+//     return;
+//   }
+//   searchImage.style.cursor = "pointer";
+//   searchImage.addEventListener("click", () => {
+//     createSearchBox();
+//   });
+//   searchImage.addEventListener("keydown", (e) => {
+//     if (e.key === "Enter") {
+//       createSearchBox();
+//       e.currentTarget.nextElementSibling.focus();
+//     }
+//   });
+//   //searchImage.setAttribute('title', listOfAllPlaceholdersData.searchAltText || 'Search');
+// }
 
-function handleEnterKey(event) {
-  if (event.key !== "Enter") return;
-  const inputValue = document.querySelector(".search-container input").value;
-  //const url = (listOfAllPlaceholdersData.searchRedirectUrl || 'https://wknd.site/en/search?q=') + inputValue;
+// function handleEnterKey(event) {
+//   if (event.key !== "Enter") return;
+//   const inputValue = document.querySelector(".search-container input").value;
+//   //const url = (listOfAllPlaceholdersData.searchRedirectUrl || 'https://wknd.site/en/search?q=') + inputValue;
 
-  const url = `/content/${siteName}/search-results.html?q=` + inputValue;
+//   const url = `/content/${siteName}/search-results.html?q=` + inputValue;
 
-  if (inputValue) window.location.href = url;
-}
+//   if (inputValue) window.location.href = url;
+// }
 
 // // function createSearchBox() {
 // //   const navWrapper = document.querySelector(".nav-wrapper");

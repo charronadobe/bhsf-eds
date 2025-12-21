@@ -468,242 +468,242 @@ async function overlayLoad(navSections) {
 //   }
 // }
 
-// /**
-//  * loads and decorates the header, mainly the nav
-//  * @param {Element} block The header block element
-//  */
-// export default async function decorate(block) {
-//   // load nav as fragment
-//   //const locale = getMetadata('nav');
+/**
+ * loads and decorates the header, mainly the nav
+ * @param {Element} block The header block element
+ */
+export default async function decorate(block) {
+  // load nav as fragment
+  //const locale = getMetadata('nav');
 
-//   const themeCFReference = getMetadata("theme_cf_reference");
-//   applyCFTheme(themeCFReference);
+  const themeCFReference = getMetadata("theme_cf_reference");
+  applyCFTheme(themeCFReference);
 
-//   const navMeta = getMetadata("nav");
-//   const langCode = getLanguage();
-//   console.log("langCode :" + langCode);
+  const navMeta = getMetadata("nav");
+  const langCode = getLanguage();
+  console.log("langCode :" + langCode);
 
-//   const isAuthor = isAuthorEnvironment();
-//   let navPath = `/${langCode}/nav`;
+  const isAuthor = isAuthorEnvironment();
+  let navPath = `/${langCode}/nav`;
 
-//   if (isAuthor) {
-//     navPath = navMeta
-//       ? new URL(navMeta, window.location).pathname
-//       : `/content/${siteName}${PATH_PREFIX}/${langCode}/nav`;
-//   }
+  if (isAuthor) {
+    navPath = navMeta
+      ? new URL(navMeta, window.location).pathname
+      : `/content/${siteName}${PATH_PREFIX}/${langCode}/nav`;
+  }
 
-//   //const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  //const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
 
-//   const pathSegments = window.location.pathname.split("/").filter(Boolean);
-//   //console.log("pathSegments header: ", pathSegments);
-//   const parentPath =
-//     pathSegments.length > 2 ? `/${pathSegments.slice(0, 3).join("/")}` : "/";
-//   //console.log("parentPath header: ", parentPath);
-//   //const navPath = locale ? `/${locale}/nav` : parentPath+'/nav';
-//   //const navPath = parentPath=='/' ? locale ? `/${locale}/nav` : '/nav' : locale ? `/${locale}/nav` : parentPath+'/nav';
-//   //console.log("navPath header: ", navPath);
-//   const fragment = await loadFragment(navPath);
+  const pathSegments = window.location.pathname.split("/").filter(Boolean);
+  //console.log("pathSegments header: ", pathSegments);
+  const parentPath =
+    pathSegments.length > 2 ? `/${pathSegments.slice(0, 3).join("/")}` : "/";
+  //console.log("parentPath header: ", parentPath);
+  //const navPath = locale ? `/${locale}/nav` : parentPath+'/nav';
+  //const navPath = parentPath=='/' ? locale ? `/${locale}/nav` : '/nav' : locale ? `/${locale}/nav` : parentPath+'/nav';
+  //console.log("navPath header: ", navPath);
+  const fragment = await loadFragment(navPath);
 
-//   // decorate nav DOM
-//   block.textContent = "";
-//   const nav = document.createElement("nav");
-//   nav.id = "nav";
-//   while (fragment && fragment.firstElementChild)
-//     nav.append(fragment.firstElementChild);
+  // decorate nav DOM
+  block.textContent = "";
+  const nav = document.createElement("nav");
+  nav.id = "nav";
+  while (fragment && fragment.firstElementChild)
+    nav.append(fragment.firstElementChild);
 
-//   const classes = ["brand", "sections", "tools"];
-//   classes.forEach((c, i) => {
-//     const section = nav.children[i];
-//     if (section) section.classList.add(`nav-${c}`);
-//   });
+  const classes = ["brand", "sections", "tools"];
+  classes.forEach((c, i) => {
+    const section = nav.children[i];
+    if (section) section.classList.add(`nav-${c}`);
+  });
 
-//   const navBrand = nav.querySelector(".nav-brand");
-//   const brandLink = navBrand?.querySelector(".button");
-//   if (brandLink) {
-//     brandLink.className = "";
-//     brandLink.closest(".button-container").className = "";
-//   }
+  const navBrand = nav.querySelector(".nav-brand");
+  const brandLink = navBrand?.querySelector(".button");
+  if (brandLink) {
+    brandLink.className = "";
+    brandLink.closest(".button-container").className = "";
+  }
 
-//   const navSections = nav.querySelector(".nav-sections");
-//   if (navSections) {
-//     navSections
-//       .querySelectorAll(":scope .default-content-wrapper > ul > li")
-//       .forEach((navSection) => {
-//         if (navSection.querySelector("ul"))
-//           navSection.classList.add("nav-drop");
-//         navSection.addEventListener("click", () => {
-//           if (isDesktop.matches) {
-//             const expanded =
-//               navSection.getAttribute("aria-expanded") === "true";
-//             toggleAllNavSections(navSections);
-//             navSection.setAttribute(
-//               "aria-expanded",
-//               expanded ? "false" : "true"
-//             );
-//           }
-//         });
-//       });
-//   }
+  const navSections = nav.querySelector(".nav-sections");
+  if (navSections) {
+    navSections
+      .querySelectorAll(":scope .default-content-wrapper > ul > li")
+      .forEach((navSection) => {
+        if (navSection.querySelector("ul"))
+          navSection.classList.add("nav-drop");
+        navSection.addEventListener("click", () => {
+          if (isDesktop.matches) {
+            const expanded =
+              navSection.getAttribute("aria-expanded") === "true";
+            toggleAllNavSections(navSections);
+            navSection.setAttribute(
+              "aria-expanded",
+              expanded ? "false" : "true"
+            );
+          }
+        });
+      });
+  }
 
-//   const navTools = nav.querySelector(".nav-tools");
-//   if (navTools) {
-//     const contentWrapper = nav.querySelector(
-//       '.nav-tools > div[class = "default-content-wrapper"]'
-//     );
-//     // Language switcher (minimal UI)
-//     try {
-//       const currentLang = getLanguage();
-//       const langWrap = document.createElement("div");
-//       langWrap.className = "lang-switcher";
-//       const langBtn = document.createElement("button");
-//       langBtn.type = "button";
-//       langBtn.className = "lang-button";
-//       langBtn.setAttribute("aria-haspopup", "listbox");
-//       langBtn.setAttribute("aria-expanded", "false");
-//       langBtn.textContent = currentLang.toUpperCase();
-//       const langMenu = document.createElement("ul");
-//       langMenu.className = "lang-menu";
-//       langMenu.setAttribute("role", "listbox");
-//       const langs = await discoverLanguagesFromPlaceholders();
-//       const uniqueLangs = [...new Set(langs && langs.length ? langs : ["en"])];
-//       if (uniqueLangs.length <= 1) {
-//         langBtn.setAttribute("disabled", "true");
-//         langWrap.classList.add("single-lang");
-//       }
-//       const regionNames = (() => {
-//         try {
-//           return new Intl.DisplayNames([navigator.language || "en"], {
-//             type: "region",
-//           });
-//         } catch (e) {
-//           return null;
-//         }
-//       })();
-//       const languageNames = (() => {
-//         try {
-//           return new Intl.DisplayNames([navigator.language || "en"], {
-//             type: "language",
-//           });
-//         } catch (e) {
-//           return null;
-//         }
-//       })();
+  const navTools = nav.querySelector(".nav-tools");
+  if (navTools) {
+    const contentWrapper = nav.querySelector(
+      '.nav-tools > div[class = "default-content-wrapper"]'
+    );
+    // Language switcher (minimal UI)
+    try {
+      const currentLang = getLanguage();
+      const langWrap = document.createElement("div");
+      langWrap.className = "lang-switcher";
+      const langBtn = document.createElement("button");
+      langBtn.type = "button";
+      langBtn.className = "lang-button";
+      langBtn.setAttribute("aria-haspopup", "listbox");
+      langBtn.setAttribute("aria-expanded", "false");
+      langBtn.textContent = currentLang.toUpperCase();
+      const langMenu = document.createElement("ul");
+      langMenu.className = "lang-menu";
+      langMenu.setAttribute("role", "listbox");
+      const langs = await discoverLanguagesFromPlaceholders();
+      const uniqueLangs = [...new Set(langs && langs.length ? langs : ["en"])];
+      if (uniqueLangs.length <= 1) {
+        langBtn.setAttribute("disabled", "true");
+        langWrap.classList.add("single-lang");
+      }
+      const regionNames = (() => {
+        try {
+          return new Intl.DisplayNames([navigator.language || "en"], {
+            type: "region",
+          });
+        } catch (e) {
+          return null;
+        }
+      })();
+      const languageNames = (() => {
+        try {
+          return new Intl.DisplayNames([navigator.language || "en"], {
+            type: "language",
+          });
+        } catch (e) {
+          return null;
+        }
+      })();
 
-//       uniqueLangs.forEach((raw) => {
-//         const code = String(raw).replace("_", "-").toLowerCase();
-//         const [langPart, regionPart] = code.split("-");
-//         const displayCode = `${langPart}${
-//           regionPart ? `-${regionPart}` : ""
-//         }`.toUpperCase();
-//         const country = regionPart
-//           ? regionNames
-//             ? regionNames.of(regionPart.toUpperCase())
-//             : regionPart.toUpperCase()
-//           : languageNames
-//           ? languageNames.of(langPart)
-//           : langPart.toUpperCase();
+      uniqueLangs.forEach((raw) => {
+        const code = String(raw).replace("_", "-").toLowerCase();
+        const [langPart, regionPart] = code.split("-");
+        const displayCode = `${langPart}${
+          regionPart ? `-${regionPart}` : ""
+        }`.toUpperCase();
+        const country = regionPart
+          ? regionNames
+            ? regionNames.of(regionPart.toUpperCase())
+            : regionPart.toUpperCase()
+          : languageNames
+          ? languageNames.of(langPart)
+          : langPart.toUpperCase();
 
-//         const li = document.createElement("li");
-//         li.className = "lang-item";
-//         li.setAttribute("role", "option");
-//         li.setAttribute(
-//           "aria-selected",
-//           langPart === currentLang ? "true" : "false"
-//         );
+        const li = document.createElement("li");
+        li.className = "lang-item";
+        li.setAttribute("role", "option");
+        li.setAttribute(
+          "aria-selected",
+          langPart === currentLang ? "true" : "false"
+        );
 
-//         const link = document.createElement("a");
-//         // Use only language segment for routing if site paths are language-based
-//         link.href = computeLocalizedUrl(langPart);
+        const link = document.createElement("a");
+        // Use only language segment for routing if site paths are language-based
+        link.href = computeLocalizedUrl(langPart);
 
-//         const pre = document.createElement("span");
-//         pre.className = "lang-pretitle";
-//         pre.textContent = displayCode;
+        const pre = document.createElement("span");
+        pre.className = "lang-pretitle";
+        pre.textContent = displayCode;
 
-//         const name = document.createElement("span");
-//         name.className = "lang-country";
-//         name.textContent = country;
+        const name = document.createElement("span");
+        name.className = "lang-country";
+        name.textContent = country;
 
-//         link.append(name, pre);
-//         li.append(link);
-//         langMenu.append(li);
-//       });
-//       langBtn.addEventListener("click", () => {
-//         const expanded = langBtn.getAttribute("aria-expanded") === "true";
-//         langBtn.setAttribute("aria-expanded", expanded ? "false" : "true");
-//         langWrap.classList.toggle("open", !expanded);
-//       });
-//       document.addEventListener("click", (e) => {
-//         if (!langWrap.contains(e.target)) {
-//           langBtn.setAttribute("aria-expanded", "false");
-//           langWrap.classList.remove("open");
-//         }
-//       });
-//       document.addEventListener("keydown", (e) => {
-//         if (e.key === "Escape") {
-//           langBtn.setAttribute("aria-expanded", "false");
-//           langWrap.classList.remove("open");
-//         }
-//       });
-//       langWrap.append(langBtn, langMenu);
-//       const targetContainer = contentWrapper || navTools;
-//       targetContainer.append(langWrap);
-//     } catch (e) {
-//       // eslint-disable-next-line no-console
-//       console.warn("Language switcher init failed", e);
-//     }
-//     // Close Search Container on Focus out
-//     document.addEventListener("click", (e) => {
-//       closeSearchOnFocusOut(e, navTools);
-//     });
-//     document.addEventListener("keydown", (e) => {
-//       if (e.key === "Tab") {
-//         const headerWrapper = document.querySelector(".header-wrapper");
-//         const searchContainer = headerWrapper
-//           ? headerWrapper.querySelector(".search-container")
-//           : null;
-//         if (
-//           searchContainer &&
-//           searchContainer.style.display !== "none" &&
-//           searchContainer.contains(e.target)
-//         ) {
-//           closeSearchBox();
-//         }
-//       }
-//     });
-//   }
+        link.append(name, pre);
+        li.append(link);
+        langMenu.append(li);
+      });
+      langBtn.addEventListener("click", () => {
+        const expanded = langBtn.getAttribute("aria-expanded") === "true";
+        langBtn.setAttribute("aria-expanded", expanded ? "false" : "true");
+        langWrap.classList.toggle("open", !expanded);
+      });
+      document.addEventListener("click", (e) => {
+        if (!langWrap.contains(e.target)) {
+          langBtn.setAttribute("aria-expanded", "false");
+          langWrap.classList.remove("open");
+        }
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          langBtn.setAttribute("aria-expanded", "false");
+          langWrap.classList.remove("open");
+        }
+      });
+      langWrap.append(langBtn, langMenu);
+      const targetContainer = contentWrapper || navTools;
+      targetContainer.append(langWrap);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("Language switcher init failed", e);
+    }
+    // Close Search Container on Focus out
+    document.addEventListener("click", (e) => {
+      closeSearchOnFocusOut(e, navTools);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Tab") {
+        const headerWrapper = document.querySelector(".header-wrapper");
+        const searchContainer = headerWrapper
+          ? headerWrapper.querySelector(".search-container")
+          : null;
+        if (
+          searchContainer &&
+          searchContainer.style.display !== "none" &&
+          searchContainer.contains(e.target)
+        ) {
+          closeSearchBox();
+        }
+      }
+    });
+  }
 
-//   // hamburger for mobile
-//   const hamburger = document.createElement("div");
-//   hamburger.classList.add("nav-hamburger");
-//   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-//       <span class="nav-hamburger-icon"></span>
-//     </button>`;
-//   hamburger.addEventListener("click", () => toggleMenu(nav, navSections));
-//   nav.prepend(hamburger);
-//   nav.setAttribute("aria-expanded", "false");
-//   // prevent mobile nav behavior on window resize
-//   toggleMenu(nav, navSections, isDesktop.matches);
-//   isDesktop.addEventListener("change", () =>
-//     toggleMenu(nav, navSections, isDesktop.matches)
-//   );
+  // hamburger for mobile
+  const hamburger = document.createElement("div");
+  hamburger.classList.add("nav-hamburger");
+  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+      <span class="nav-hamburger-icon"></span>
+    </button>`;
+  hamburger.addEventListener("click", () => toggleMenu(nav, navSections));
+  nav.prepend(hamburger);
+  nav.setAttribute("aria-expanded", "false");
+  // prevent mobile nav behavior on window resize
+  toggleMenu(nav, navSections, isDesktop.matches);
+  isDesktop.addEventListener("change", () =>
+    toggleMenu(nav, navSections, isDesktop.matches)
+  );
 
-//   const navWrapper = document.createElement("div");
-//   navWrapper.className = "nav-wrapper";
-//   navWrapper.append(nav);
-//   block.append(navWrapper);
-//   settingAltTextForSearchIcon();
-//   //fetchingPlaceholdersData();
-//   addLogoLink(langCode);
-//   // Ensure search icon mask uses correct base path in UE/author/local
-//   try {
-//     const iconEl = document.querySelector("header .search.search-icon .icon");
-//     if (iconEl && window.hlx && window.hlx.codeBasePath) {
-//       const iconUrl = `${window.hlx.codeBasePath}/icons/search.svg`;
-//       iconEl.style.webkitMask = `url(${iconUrl}) no-repeat center / contain`;
-//       iconEl.style.mask = `url(${iconUrl}) no-repeat center / contain`;
-//     }
-//   } catch (e) {
-//     // eslint-disable-next-line no-console
-//     console.debug("search icon mask init skipped", e);
-//   }
-// }
+  const navWrapper = document.createElement("div");
+  navWrapper.className = "nav-wrapper";
+  navWrapper.append(nav);
+  block.append(navWrapper);
+  settingAltTextForSearchIcon();
+  //fetchingPlaceholdersData();
+  addLogoLink(langCode);
+  // Ensure search icon mask uses correct base path in UE/author/local
+  try {
+    const iconEl = document.querySelector("header .search.search-icon .icon");
+    if (iconEl && window.hlx && window.hlx.codeBasePath) {
+      const iconUrl = `${window.hlx.codeBasePath}/icons/search.svg`;
+      iconEl.style.webkitMask = `url(${iconUrl}) no-repeat center / contain`;
+      iconEl.style.mask = `url(${iconUrl}) no-repeat center / contain`;
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.debug("search icon mask init skipped", e);
+  }
+}

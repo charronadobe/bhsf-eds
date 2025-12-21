@@ -87,31 +87,31 @@ const siteName = await getSiteName();
 //   }
 // }
 
-async function overlayLoad(navSections) {
-  const langCode = getLanguage();
-  const placeholdersData = await fetchLanguagePlaceholders();
-  const navOverlay = navSections.querySelector(
-    constants.NAV_MENU_OVERLAY_WITH_SELECTOR
-  );
-  if (!navOverlay) {
-    const structuredNav = formatNavigationJsonData(
-      window.navigationData[`/${langCode}`]
-    );
-    // Add navigation menu to header
-    navSections.append(getNavigationMenu(structuredNav, placeholdersData));
-  }
-  const rightColumn = navSections.querySelector(".nav-menu-column.right");
-  const leftColumn = navSections.querySelector(".nav-menu-column.left");
-  isDesktop.addEventListener("change", () =>
-    closesideMenu(leftColumn, rightColumn)
-  );
-  document.body.addEventListener("click", (e) =>
-    closesearchbar(e, navSections)
-  );
-  document.body.addEventListener("keydown", (e) =>
-    closesearchbar(e, navSections)
-  );
-}
+// async function overlayLoad(navSections) {
+//   const langCode = getLanguage();
+//   const placeholdersData = await fetchLanguagePlaceholders();
+//   const navOverlay = navSections.querySelector(
+//     constants.NAV_MENU_OVERLAY_WITH_SELECTOR
+//   );
+//   if (!navOverlay) {
+//     const structuredNav = formatNavigationJsonData(
+//       window.navigationData[`/${langCode}`]
+//     );
+//     // Add navigation menu to header
+//     navSections.append(getNavigationMenu(structuredNav, placeholdersData));
+//   }
+//   const rightColumn = navSections.querySelector(".nav-menu-column.right");
+//   const leftColumn = navSections.querySelector(".nav-menu-column.left");
+//   isDesktop.addEventListener("change", () =>
+//     closesideMenu(leftColumn, rightColumn)
+//   );
+//   document.body.addEventListener("click", (e) =>
+//     closesearchbar(e, navSections)
+//   );
+//   document.body.addEventListener("keydown", (e) =>
+//     closesearchbar(e, navSections)
+//   );
+// }
 
 /**
  * Toggles the entire nav

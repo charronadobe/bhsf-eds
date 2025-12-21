@@ -364,7 +364,7 @@ async function addLogoLink(langCode) {
     const picture = document.querySelector(".nav-brand picture");
     if (picture) anchor.appendChild(picture);
     const targetElement = document.querySelector(
-      ".nav-brand .default-content-whopper"
+      ".nav-brand .default-content-wrapper"
     );
     if (targetElement) {
       targetElement.appendChild(anchor);

@@ -71,21 +71,21 @@ const siteName = await getSiteName();
 //   document.activeElement.addEventListener("keydown", openOnKeydown);
 // }
 
-/**
- * Toggles all nav sections
- * @param {Element} sections The container element
- * @param {Boolean} expanded Whether the element should be expanded or collapsed
- */
-function toggleAllNavSections(sections, expanded = false) {
-  const navSections = sections.querySelectorAll(
-    ".nav-sections .default-content-wrapper > ul > li"
-  );
-  if (navSections && navSections.length > 0) {
-    navSections.forEach((section) => {
-      section.setAttribute("aria-expanded", expanded);
-    });
-  }
-}
+// /**
+//  * Toggles all nav sections
+//  * @param {Element} sections The container element
+//  * @param {Boolean} expanded Whether the element should be expanded or collapsed
+//  */
+// function toggleAllNavSections(sections, expanded = false) {
+//   const navSections = sections.querySelectorAll(
+//     ".nav-sections .default-content-wrapper > ul > li"
+//   );
+//   if (navSections && navSections.length > 0) {
+//     navSections.forEach((section) => {
+//       section.setAttribute("aria-expanded", expanded);
+//     });
+//   }
+// }
 
 async function overlayLoad(navSections) {
   const langCode = getLanguage();

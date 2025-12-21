@@ -7,6 +7,7 @@ import {
   span,
   input,
   a,
+  h3,
 } from "../../scripts/dom-helpers.js";
 import * as constants from "./constants.js";
 
@@ -278,7 +279,7 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
   structuredNav.forEach((level0Item, index) => {
     const submenuId = `${constants.SUBMENU}_${index}`;
     // create left column menu
-    const level0MenuItem = p(
+    const level0MenuItem = h3(
       {
         tabindex: "0",
         "aria-expanded": "false",

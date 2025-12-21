@@ -326,7 +326,7 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
       level0MenuItem.setAttribute("aria-expanded", "true");
     }
 
-    // listMainNavTitle.appendChild(level0MenuItem);
+    listMainNavTitle.appendChild(level0MenuItem);
 
     // Create right column submenu
     // Iterate over level0 Items and create associated category list

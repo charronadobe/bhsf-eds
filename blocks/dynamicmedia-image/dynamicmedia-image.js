@@ -60,7 +60,7 @@ export default async function decorate(block) {
       let imageName = imageSrc.split("/").pop().split(".")[0];
       let dmUrl =
         dmUrlEl || "https://s7d1.scene7.com/is/image/AndyCharronNA001/";
-
+      alert("HEYA!");
       imageEl.setAttribute(
         "data-src",
         dmUrl + (dmUrl.endsWith("/") ? "" : "/") + imageName

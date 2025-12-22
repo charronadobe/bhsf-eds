@@ -358,7 +358,7 @@ async function addLogoLink(langCode) {
     const logoImage = document.querySelector(".nav-brand img");
     const anchor = document.createElement("a");
     Object.assign(anchor, {
-      href: logoLink,
+      href: logoImage?.alt,
       title: "BHSF",
     });
     const picture = document.querySelector(".nav-brand picture");

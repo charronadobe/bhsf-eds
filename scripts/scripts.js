@@ -1,3 +1,27 @@
+/* https://github.com/adobe/aem-experimentation/readme.md begin */
+const experimentationConfig = {
+  prodHost: "www.my-site.com",
+  audiences: {
+    mobile: () => window.innerWidth < 600,
+    desktop: () => window.innerWidth >= 600,
+    // define your custom audiences here as needed
+  },
+};
+
+let runExperimentation;
+let showExperimentationOverlay;
+const isExperimentationEnabled =
+  document.head.querySelector(
+    '[name^="experiment"],[name^="campaign-"],[name^="audience-"],[property^="campaign:"],[property^="audience:"]'
+  ) ||
+  [...document.querySelectorAll(".section-metadata div")].some((d) =>
+    d.textContent.match(/Experiment|Campaign|Audience/i)
+  );
+if (isExperimentationEnabled) {
+  ({ loadEager: runExperimentation, loadLazy: showExperimentationOverlay } =
+    await import("../plugins/experimentation/src/index.js"));
+}
+/* https://github.com/adobe/aem-experimentation/readme.md end */
 import {
   loadHeader,
   loadFooter,
@@ -15,9 +39,9 @@ import {
   getMetadata,
   loadScript,
   toClassName,
-  toCamelCase
-} from './aem.js';
-import { picture, source, img } from './dom-helpers.js';
+  toCamelCase,
+} from "./aem.js";
+import { picture, source, img } from "./dom-helpers.js";
 
 import {
   getLanguage,
@@ -25,25 +49,25 @@ import {
   setPageLanguage,
   PATH_PREFIX,
   createSource,
-  getHostname
-} from './utils.js';
+  getHostname,
+} from "./utils.js";
 
 function addPreconnect(origin) {
   try {
     if (!origin) return;
     const href = String(origin);
-    if (!href.startsWith('http')) return;
-    if (document.querySelector(`link[rel="preconnect"][href="${href}"]`)) return;
-    const link = document.createElement('link');
-    link.rel = 'preconnect';
+    if (!href.startsWith("http")) return;
+    if (document.querySelector(`link[rel="preconnect"][href="${href}"]`))
+      return;
+    const link = document.createElement("link");
+    link.rel = "preconnect";
     link.href = href;
-    link.crossOrigin = '';
+    link.crossOrigin = "";
     document.head.appendChild(link);
   } catch (e) {
     /* noop */
   }
 }
-
 
 /**
  * Moves all the attributes from a given elmenet to another given element.
@@ -65,9 +89,9 @@ export function moveAttributes(from, to, attributes) {
 }
 
 export function isAuthorEnvironment() {
-  if(window?.location?.origin?.includes('author')){
+  if (window?.location?.origin?.includes("author")) {
     return true;
-  }else{
+  } else {
     return false;
   }
   /*
@@ -88,7 +112,10 @@ export function moveInstrumentation(from, to) {
     to,
     [...from.attributes]
       .map(({ nodeName }) => nodeName)
-      .filter((attr) => attr.startsWith('data-aue-') || attr.startsWith('data-richtext-')),
+      .filter(
+        (attr) =>
+          attr.startsWith("data-aue-") || attr.startsWith("data-richtext-")
+      )
   );
 }
 
@@ -98,7 +125,8 @@ export function moveInstrumentation(from, to) {
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
   try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+    if (!window.location.hostname.includes("localhost"))
+      sessionStorage.setItem("fonts-loaded", "true");
   } catch (e) {
     // do nothing
   }
@@ -115,13 +143,16 @@ export async function fetchLanguagePlaceholders() {
     return await fetchPlaceholders(`${PATH_PREFIX}/${langCode}`);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(`Error fetching placeholders for lang: ${langCode}. Will try to get en placeholders`, error);
+    console.error(
+      `Error fetching placeholders for lang: ${langCode}. Will try to get en placeholders`,
+      error
+    );
     // Retry without specifying a language (using the default language)
     try {
       return await fetchPlaceholders(`${PATH_PREFIX}/en`);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error('Error fetching placeholders:', err);
+      console.error("Error fetching placeholders:", err);
     }
   }
   return {}; // default to empty object
@@ -136,7 +167,7 @@ function buildAutoBlocks() {
     // TODO: add auto block, if needed
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Auto Blocking failed', error);
+    console.error("Auto Blocking failed", error);
   }
 }
 
@@ -146,9 +177,9 @@ function buildAutoBlocks() {
  * Idempotent: will not duplicate if already enhanced.
  */
 function decorateSectionImages(doc) {
-  const sections = doc.querySelectorAll('main .section[data-image]');
+  const sections = doc.querySelectorAll("main .section[data-image]");
   sections.forEach((section) => {
-    if (section.querySelector('picture.section-bg')) return; // already enhanced
+    if (section.querySelector("picture.section-bg")) return; // already enhanced
 
     const desktopSrc = section.dataset.image?.trim();
     if (!desktopSrc) return;
@@ -157,7 +188,7 @@ function decorateSectionImages(doc) {
     const mobileSrc = section.dataset.mobImage?.trim();
 
     const pic = picture();
-    pic.className = 'section-bg';
+    pic.className = "section-bg";
 
     // WebP sources for breakpoints (prefer authored overrides if present)
     const desktopCandidate = desktopSrc;
@@ -166,23 +197,58 @@ function decorateSectionImages(doc) {
 
     // Desktop
     try {
-      pic.appendChild(source({ srcset: `${new URL(desktopCandidate, window.location.href).pathname}?width=1400&format=webply&optimize=medium`, type: 'image/webp', media: '(min-width: 992px)' }));
-    } catch (e) { /* ignore malformed URL */ }
+      pic.appendChild(
+        source({
+          srcset: `${
+            new URL(desktopCandidate, window.location.href).pathname
+          }?width=1400&format=webply&optimize=medium`,
+          type: "image/webp",
+          media: "(min-width: 992px)",
+        })
+      );
+    } catch (e) {
+      /* ignore malformed URL */
+    }
     // Tablet
     try {
-      pic.appendChild(source({ srcset: `${new URL(tabletCandidate, window.location.href).pathname}?width=1024&format=webply&optimize=medium`, type: 'image/webp', media: '(min-width: 768px)' }));
-    } catch (e) { /* ignore malformed URL */ }
+      pic.appendChild(
+        source({
+          srcset: `${
+            new URL(tabletCandidate, window.location.href).pathname
+          }?width=1024&format=webply&optimize=medium`,
+          type: "image/webp",
+          media: "(min-width: 768px)",
+        })
+      );
+    } catch (e) {
+      /* ignore malformed URL */
+    }
     // Mobile
     try {
-      pic.appendChild(source({ srcset: `${new URL(mobileCandidate, window.location.href).pathname}?width=768&format=webply&optimize=medium`, type: 'image/webp', media: '(min-width: 320px)' }));
-    } catch (e) { /* ignore malformed URL */ }
+      pic.appendChild(
+        source({
+          srcset: `${
+            new URL(mobileCandidate, window.location.href).pathname
+          }?width=768&format=webply&optimize=medium`,
+          type: "image/webp",
+          media: "(min-width: 320px)",
+        })
+      );
+    } catch (e) {
+      /* ignore malformed URL */
+    }
 
     // Fallback <img> uses authored URL (keeps original format/params)
-    const fallbackImg = img({ src: desktopSrc, alt: '', class: 'sec-img', loading: 'lazy' });
+    const fallbackImg = img({
+      src: desktopSrc,
+      alt: "",
+      class: "sec-img",
+      loading: "lazy",
+    });
     pic.appendChild(fallbackImg);
 
     // Mark and insert as first child
-    section.classList.add('section-has-bg');
+    section.classList.add("section-has-bg");
     section.prepend(pic);
 
     // Compute and lock section height to image height (based on current width)
@@ -191,7 +257,7 @@ function decorateSectionImages(doc) {
         const ratio = fallbackImg.naturalHeight / fallbackImg.naturalWidth;
         const width = section.getBoundingClientRect().width;
         const height = Math.round(width * ratio);
-        section.style.minHeight = '';
+        section.style.minHeight = "";
         section.style.height = `${height}px`;
       }
     };
@@ -199,13 +265,13 @@ function decorateSectionImages(doc) {
     if (fallbackImg.complete) {
       updateHeight();
     } else {
-      fallbackImg.addEventListener('load', updateHeight, { once: true });
+      fallbackImg.addEventListener("load", updateHeight, { once: true });
     }
 
     // Recalculate on viewport changes
     const onResize = () => updateHeight();
-    window.addEventListener('resize', onResize);
-    window.addEventListener('orientationchange', onResize);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
   });
 }
 
@@ -214,21 +280,26 @@ function decorateSectionImages(doc) {
  * @param {Element} main The container element
  */
 function decorateButtons(main) {
-  main.querySelectorAll('img').forEach((img) => {
+  main.querySelectorAll("img").forEach((img) => {
     let altT = decodeURIComponent(img.alt);
 
-    if (altT && altT.includes('https://delivery-')) {
+    if (altT && altT.includes("https://delivery-")) {
       try {
         altT = JSON.parse(altT);
         const { altText, deliveryUrl } = altT;
         const url = new URL(deliveryUrl);
-        const imgName = url.pathname.substring(url.pathname.lastIndexOf('/') + 1);
+        const imgName = url.pathname.substring(
+          url.pathname.lastIndexOf("/") + 1
+        );
         const block = whatBlockIsThis(img);
         const bp = getMetadata(block);
-        let breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }];
+        let breakpoints = [
+          { media: "(min-width: 600px)", width: "2000" },
+          { width: "750" },
+        ];
         if (bp) {
-          const bps = bp.split('|');
-          const bpS = bps.map((b) => b.split(',').map((p) => p.trim()));
+          const bps = bp.split("|");
+          const bpS = bps.map((b) => b.split(",").map((p) => p.trim()));
           breakpoints = bpS.map((n) => {
             const obj = {};
             n.forEach((i) => {
@@ -238,23 +309,26 @@ function decorateButtons(main) {
             return obj;
           });
         } else {
-          const format = getMetadata(imgName.toLowerCase().replace('.', '-'));
-          const formats = format.split('|');
+          const format = getMetadata(imgName.toLowerCase().replace(".", "-"));
+          const formats = format.split("|");
           const formatObj = {};
           formats.forEach((i) => {
-            const [a, b] = i.split('=');
+            const [a, b] = i.split("=");
             formatObj[a] = b;
           });
-          breakpoints = breakpoints.map((n) => (
-            { ...n, ...formatObj }
-          ));
+          breakpoints = breakpoints.map((n) => ({ ...n, ...formatObj }));
         }
-        const picture = createOptimizedPicture(deliveryUrl, altText, false, breakpoints);
+        const picture = createOptimizedPicture(
+          deliveryUrl,
+          altText,
+          false,
+          breakpoints
+        );
         img.parentElement.replaceWith(picture);
       } catch (error) {
-        img.setAttribute('style', 'border:5px solid red');
-        img.setAttribute('data-asset-type', 'video');
-        img.setAttribute('title', 'Update block to render video.');
+        img.setAttribute("style", "border:5px solid red");
+        img.setAttribute("data-asset-type", "video");
+        img.setAttribute("title", "Update block to render video.");
       }
     }
   });
@@ -276,25 +350,25 @@ export function decorateMain(main) {
   decorateDMImages(main);
 }
 
-
 async function renderWBDataLayer() {
-  
   //const config = await fetchPlaceholders();
-  const lastPubDateStr = getMetadata('published-time');
-  const firstPubDateStr = getMetadata('content_date') || lastPubDateStr;
+  const lastPubDateStr = getMetadata("published-time");
+  const firstPubDateStr = getMetadata("content_date") || lastPubDateStr;
   const hostnameFromPlaceholders = await getHostname();
   window.wbgData.page = {
     pageInfo: {
-      pageCategory: getMetadata('pagecategory'),
-      channel: getMetadata('channel'),
-      themecfreference: getMetadata('theme_cf_reference'),
-      contentType: getMetadata('content_type'),
-      pageUid: getMetadata('pageuid'),
-      pageName: getMetadata('pagename'),
-      hostName: hostnameFromPlaceholders ? hostnameFromPlaceholders : getMetadata('hostname'),
+      pageCategory: getMetadata("pagecategory"),
+      channel: getMetadata("channel"),
+      themecfreference: getMetadata("theme_cf_reference"),
+      contentType: getMetadata("content_type"),
+      pageUid: getMetadata("pageuid"),
+      pageName: getMetadata("pagename"),
+      hostName: hostnameFromPlaceholders
+        ? hostnameFromPlaceholders
+        : getMetadata("hostname"),
       pageFirstPub: formatDate(firstPubDateStr),
       pageLastMod: formatDate(lastPubDateStr),
-      webpackage: '',
+      webpackage: "",
     },
   };
 }
@@ -304,11 +378,17 @@ async function renderWBDataLayer() {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
+  /* https://github.com/adobe/aem-experimentation/readme.md begin */
+  // Add below snippet early in the eager phase
+  if (runExperimentation) {
+    await runExperimentation(document, experimentationConfig);
+  }
+  /* https://github.com/adobe/aem-experimentation/readme.md end */
   setPageLanguage();
   // Preconnect dynamically to speed up LCP fetch without hardcoding hosts
   try {
     addPreconnect(window.location.origin);
-    const lcpImg = doc.querySelector('main img');
+    const lcpImg = doc.querySelector("main img");
     if (lcpImg?.src) {
       const u = new URL(lcpImg.src, window.location.href);
       addPreconnect(u.origin);
@@ -318,16 +398,16 @@ async function loadEager(doc) {
   }
   decorateTemplateAndTheme();
   renderWBDataLayer();
-  const main = doc.querySelector('main');
+  const main = doc.querySelector("main");
   if (main) {
     decorateMain(main);
-    document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    document.body.classList.add("appear");
+    await loadSection(main.querySelector(".section"), waitForFirstImage);
   }
 
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
-    if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
+    if (window.innerWidth >= 900 || sessionStorage.getItem("fonts-loaded")) {
       loadFonts();
     }
   } catch (e) {
@@ -384,19 +464,24 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  const main = doc.querySelector('main');
+  /* https://github.com/adobe/aem-experimentation/readme.md begin */
+  // Add below snippet at the end of the lazy phase
+  if (showExperimentationOverlay) {
+    await showExperimentationOverlay(document, experimentationConfig);
+  }
+  /* https://github.com/adobe/aem-experimentation/readme.md end */
+  const main = doc.querySelector("main");
   await loadSections(main);
   decorateSectionImages(doc);
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  loadHeader(doc.querySelector("header"));
+  loadFooter(doc.querySelector("footer"));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 }
-
 
 /**
  * Decorates Dynamic Media images by modifying their URLs to include specific parameters
@@ -406,70 +491,112 @@ async function loadLazy(doc) {
  */
 export function decorateDMImages(main) {
   main.querySelectorAll('a[href^="https://delivery-p"]').forEach((a) => {
-    const url = new URL(a.href.split('?')[0]);
-    if (url.hostname.endsWith('.adobeaemcloud.com')) {
-
-        const blockBeingDecorated = whatBlockIsThis(a);
-        let blockName = '';
-        let rotate = '';
-        let flip = '';
-        let crop = '';
-        if(blockBeingDecorated && blockBeingDecorated.classList){
-            blockName = Array.from(blockBeingDecorated.classList).find(className => className !== 'block');
-        }
-       const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.ogg', '.m4v', '.mkv'];
-       const isVideoAsset = videoExtensions.some(ext => url.href.toLowerCase().includes(ext));
-       // Skip blocks that handle their own image decoration
-       const excludedBlocks = ['video', 'carousel', 'cards'];
-       if (isVideoAsset || excludedBlocks.includes(blockName)) return;
-        if(blockName && blockName === 'dynamicmedia-image'){
-          rotate = blockBeingDecorated?.children[3]?.textContent?.trim();
-          flip = blockBeingDecorated?.children[4]?.textContent?.trim();
-          crop = blockBeingDecorated?.children[5]?.textContent?.trim();
-        }
-
-        const uuidPattern = /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i;
-        const match = url.href?.match(uuidPattern);
-        let aliasname = '';
-        if (!match) {
-            throw new Error('No asset UUID found in URL');
-        }else{
-          aliasname = match[1];
-        }
-        let hrefWOExtn =  url.href?.substring(0, url.href?.lastIndexOf('.'))?.replace(/\/original\/(?=as\/)/, '/');
-        const pictureEl = picture(
-          source({ 
-              srcset: `${hrefWOExtn}.webp?width=1400&quality=85&preferwebp=true${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              type: 'image/webp', 
-              media: '(min-width: 992px)' 
-          }),
-          source({ 
-              srcset: `${hrefWOExtn}.webp?width=1320&quality=85&preferwebp=true${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              type: 'image/webp', 
-              media: '(min-width: 768px)' 
-          }),
-          source({ 
-              srcset: `${hrefWOExtn}.webp?width=780&quality=85&preferwebp=true${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              type: 'image/webp', 
-              media: '(min-width: 320px)' 
-          }),
-          source({ 
-              srcset: `${hrefWOExtn}.webp?width=1400&quality=85${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              media: '(min-width: 992px)' 
-          }),
-          source({ 
-              srcset: `${hrefWOExtn}.webp?width=1320&quality=85${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              media: '(min-width: 768px)' 
-          }),
-          source({ 
-              srcset: `${hrefWOExtn}.webp?width=780&quality=85${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              media: '(min-width: 320px)' 
-          }),
-          img({ 
-              src: `${hrefWOExtn}.webp?width=1400&quality=85${rotate ? '&rotate=' + rotate : ''}${flip ? '&flip=' + flip.toLowerCase() : ''}${crop ? '&crop=' + crop.toLowerCase() : ''}`, 
-              alt: a.innerText 
-          }),
+    const url = new URL(a.href.split("?")[0]);
+    if (url.hostname.endsWith(".adobeaemcloud.com")) {
+      const blockBeingDecorated = whatBlockIsThis(a);
+      let blockName = "";
+      let rotate = "";
+      let flip = "";
+      let crop = "";
+      if (blockBeingDecorated && blockBeingDecorated.classList) {
+        blockName = Array.from(blockBeingDecorated.classList).find(
+          (className) => className !== "block"
         );
+      }
+      const videoExtensions = [
+        ".mp4",
+        ".mov",
+        ".avi",
+        ".webm",
+        ".ogg",
+        ".m4v",
+        ".mkv",
+      ];
+      const isVideoAsset = videoExtensions.some((ext) =>
+        url.href.toLowerCase().includes(ext)
+      );
+      // Skip blocks that handle their own image decoration
+      const excludedBlocks = ["video", "carousel", "cards"];
+      if (isVideoAsset || excludedBlocks.includes(blockName)) return;
+      if (blockName && blockName === "dynamicmedia-image") {
+        rotate = blockBeingDecorated?.children[3]?.textContent?.trim();
+        flip = blockBeingDecorated?.children[4]?.textContent?.trim();
+        crop = blockBeingDecorated?.children[5]?.textContent?.trim();
+      }
+
+      const uuidPattern =
+        /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i;
+      const match = url.href?.match(uuidPattern);
+      let aliasname = "";
+      if (!match) {
+        throw new Error("No asset UUID found in URL");
+      } else {
+        aliasname = match[1];
+      }
+      let hrefWOExtn = url.href
+        ?.substring(0, url.href?.lastIndexOf("."))
+        ?.replace(/\/original\/(?=as\/)/, "/");
+      const pictureEl = picture(
+        source({
+          srcset: `${hrefWOExtn}.webp?width=1400&quality=85&preferwebp=true${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          type: "image/webp",
+          media: "(min-width: 992px)",
+        }),
+        source({
+          srcset: `${hrefWOExtn}.webp?width=1320&quality=85&preferwebp=true${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          type: "image/webp",
+          media: "(min-width: 768px)",
+        }),
+        source({
+          srcset: `${hrefWOExtn}.webp?width=780&quality=85&preferwebp=true${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          type: "image/webp",
+          media: "(min-width: 320px)",
+        }),
+        source({
+          srcset: `${hrefWOExtn}.webp?width=1400&quality=85${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          media: "(min-width: 992px)",
+        }),
+        source({
+          srcset: `${hrefWOExtn}.webp?width=1320&quality=85${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          media: "(min-width: 768px)",
+        }),
+        source({
+          srcset: `${hrefWOExtn}.webp?width=780&quality=85${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          media: "(min-width: 320px)",
+        }),
+        img({
+          src: `${hrefWOExtn}.webp?width=1400&quality=85${
+            rotate ? "&rotate=" + rotate : ""
+          }${flip ? "&flip=" + flip.toLowerCase() : ""}${
+            crop ? "&crop=" + crop.toLowerCase() : ""
+          }`,
+          alt: a.innerText,
+        })
+      );
       a.replaceWith(pictureEl);
     }
   });
@@ -479,7 +606,8 @@ function whatBlockIsThis(element) {
   let currentElement = element;
 
   while (currentElement.parentElement) {
-    if (currentElement.parentElement.classList.contains('block')) return currentElement.parentElement;
+    if (currentElement.parentElement.classList.contains("block"))
+      return currentElement.parentElement;
     currentElement = currentElement.parentElement;
     if (currentElement.classList.length > 0) return currentElement.classList[0];
   }
@@ -491,10 +619,10 @@ function whatBlockIsThis(element) {
  * @param {Element} main The container element
  */
 function adjustAutoImages(main) {
-  const pictureElement = main.querySelector('div > p > picture');
+  const pictureElement = main.querySelector("div > p > picture");
   if (pictureElement) {
     const pElement = pictureElement.parentElement;
-    pElement.className = 'auto-image-container';
+    pElement.className = "auto-image-container";
   }
 }
 
@@ -504,7 +632,7 @@ function adjustAutoImages(main) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => import("./delayed.js"), 3000);
   // load anything that can be postponed to the latest here
 }
 

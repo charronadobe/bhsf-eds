@@ -509,7 +509,7 @@ header nav .nav-tools .lang-switcher {
         padding: 8% 3%;
         text-align: center;
         z-index: 11111111;
-        background-color: var(--dark-color-opacity);
+        background-color: var(--light-color-opacity);
     }
 
     header nav .nav-sections ul {

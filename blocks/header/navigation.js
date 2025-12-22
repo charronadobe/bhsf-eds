@@ -275,70 +275,70 @@ const getNavigationMenu = (structuredNav, placeholdersData) => {
   );
   const menuOverlay = div({ class: constants.NAV_MENU_OVERLAY }, navMenu);
 
-  // Iterate Over structured nav data to create left & right menu navigation.
-  // structuredNav.forEach((level0Item, index) => {
-  //   const submenuId = `${constants.SUBMENU}_${index}`;
-  //   // create left column menu
-  //   const level0MenuItem = li(
-  //     {
-  //       tabindex: "0",
-  //       "aria-expanded": "false",
-  //       onkeydown: (e) =>
-  //         e.code === "Enter"
-  //           ? showSubMenu(
-  //               menuLeftColumn,
-  //               menuRightColumn,
-  //               submenuId,
-  //               level0Item.title,
-  //               level0Item.link,
-  //               index
-  //             )
-  //           : "",
-  //       onmouseover: () =>
-  //         isDesktop.matches
-  //           ? showSubMenu(
-  //               menuLeftColumn,
-  //               menuRightColumn,
-  //               submenuId,
-  //               level0Item.title,
-  //               level0Item.link,
-  //               index
-  //             )
-  //           : "",
-  //       onclick: () =>
-  //         !isDesktop.matches
-  //           ? showSubMenu(
-  //               menuLeftColumn,
-  //               menuRightColumn,
-  //               submenuId,
-  //               level0Item.title,
-  //               level0Item.link,
-  //               index
-  //             )
-  //           : "",
-  //     },
-  //     span({ textContent: "" }), // level0MenuItemArrow
-  //     a({ href: level0Item.link }, level0Item.title)
-  //   );
-  //   const isSelected =
-  //     isDesktop.matches && index === 0 ? constants.SELECTED : "";
-  //   if (isSelected) {
-  //     level0MenuItem.classList.add(isSelected);
-  //     level0MenuItem.setAttribute("aria-expanded", "true");
-  //   }
+  Iterate Over structured nav data to create left & right menu navigation.
+  structuredNav.forEach((level0Item, index) => {
+    const submenuId = `${constants.SUBMENU}_${index}`;
+    // create left column menu
+    const level0MenuItem = li(
+      {
+        tabindex: "0",
+        "aria-expanded": "false",
+        onkeydown: (e) =>
+          e.code === "Enter"
+            ? showSubMenu(
+                menuLeftColumn,
+                menuRightColumn,
+                submenuId,
+                level0Item.title,
+                level0Item.link,
+                index
+              )
+            : "",
+        onmouseover: () =>
+          isDesktop.matches
+            ? showSubMenu(
+                menuLeftColumn,
+                menuRightColumn,
+                submenuId,
+                level0Item.title,
+                level0Item.link,
+                index
+              )
+            : "",
+        onclick: () =>
+          !isDesktop.matches
+            ? showSubMenu(
+                menuLeftColumn,
+                menuRightColumn,
+                submenuId,
+                level0Item.title,
+                level0Item.link,
+                index
+              )
+            : "",
+      },
+      span({ textContent: "" }), // level0MenuItemArrow
+      a({ href: level0Item.link }, level0Item.title)
+    );
+    const isSelected =
+      isDesktop.matches && index === 0 ? constants.SELECTED : "";
+    if (isSelected) {
+      level0MenuItem.classList.add(isSelected);
+      level0MenuItem.setAttribute("aria-expanded", "true");
+    }
 
-  //   listMainNavTitle.appendChild(level0MenuItem);
+    listMainNavTitle.appendChild(level0MenuItem);
 
-  //   // Create right column submenu
-  //   // Iterate over level0 Items and create associated category list
-  //   const subMenu = createCategoriesAndSubMenu(
-  //     level0Item,
-  //     submenuId,
-  //     index,
-  //     `${searchByCountryPlaceholder}`
-  //   );
-  //   menuRightColumn.appendChild(subMenu);
-  // });
+    // Create right column submenu
+    // Iterate over level0 Items and create associated category list
+    const subMenu = createCategoriesAndSubMenu(
+      level0Item,
+      submenuId,
+      index,
+      `${searchByCountryPlaceholder}`
+    );
+    menuRightColumn.appendChild(subMenu);
+  });
 
   return menuOverlay;
 };

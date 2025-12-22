@@ -25,7 +25,7 @@ export default async function decorate(block) {
   let flip = inputs[3]?.textContent?.trim();
   let crop = inputs[4]?.textContent?.trim();
   let altText = inputs[5]?.textContent?.trim();
-
+  alert(imageEl);
   if (deliveryType != "na") {
     if (deliveryType === "dm") {
       // Get DM Url input
@@ -55,7 +55,7 @@ export default async function decorate(block) {
         );
         return;
       }
-      alert(imageSrc);
+
       // Get imageName from imageSrc expected in the format /content/dam/<...>/<imageName>.<extension>
       let imageName = imageSrc.split("/").pop().split(".")[0];
       let dmUrl =

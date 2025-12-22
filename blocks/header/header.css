@@ -1,6 +1,6 @@
 /* header and nav layout */
 header .nav-wrapper {
-    background-color: var(--dark-color-opacity);
+    background-color: #f62;
     width: 100%;
     z-index: 2;
     position: fixed;
@@ -520,6 +520,6 @@ header nav .nav-tools .lang-switcher {
     }
 
     body.wehealthcare-theme header nav .nav-sections ul > li > a {
-        color: #f50;
+        color: #000;
     }
 }

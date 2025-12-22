@@ -359,7 +359,7 @@ async function addLogoLink(langCode) {
     const anchor = document.createElement("a");
     Object.assign(anchor, {
       href: logoLink,
-      title: logoImage?.alt,
+      title: "BHSF",
     });
     const picture = document.querySelector(".nav-brand picture");
     if (picture) anchor.appendChild(picture);
